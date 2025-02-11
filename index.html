@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFIT Hostels</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Map Functionality -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #0d47a1;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('hero.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .hostel-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .hostel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-custom {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .btn-custom:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .floating-icons {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .floating-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .floating-icon:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .payment-success {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            z-index: 1100;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+        }
+
+        .notice-banner {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .map-container {
+            height: 300px;
+            background: #f8f9fa;
+            margin-top: 2rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        #liveChat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 10px;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header .btn-close {
+            color: white;
+        }
+    </style>
+        
+</head>
+<body>
+    <!-- Notice Banner -->
+    <div class="notice-banner">
+        <p class="mb-0">Returning students can use their matric NO/JAMB No to login. New students should sign up using JAMB No.</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Afit Hostels</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Booking</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light ms-2" href="#">Sign up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light ms-2" href="#">Log in</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating Icons -->
+    <div class="floating-icons">
+        <div class="floating-icon" title="Help">
+            <i class="fas fa-question"></i>
+        </div>
+        <div class="floating-icon" title="Support">
+            <i class="fas fa-headset"></i>
+        </div>
+        <div class="floating-icon" title="Contact">
+            <i class="fas fa-envelope"></i>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1>AirForce Institute of Technology</h1>
+            <p class="lead">... Quest of Excellence</p>
+            <button class="btn btn-lg btn-custom">BOOK NOW</button>
+        </div>
+    </section>
+
+    <!-- Hostel Selection -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>Hostel Booking</h2>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-custom w-100 gender-btn active" data-gender="girls">GIRLS</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-outline-primary w-100 gender-btn" data-gender="boys">BOYS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- NAFIL Hostel -->
+                <div class="col-md-4 mb-4">
+                    <div class="card hostel-card">
+                        <img src="hostel1.jpeg" class="card-img-top" alt="NAFIL Hostel">
+                        <div class="card-body">
+                            <h5 class="card-title">NAFIL HOSTEL</h5>
+                            <div class="mb-3">
+                                <p class="mb-1"><i class="fas fa-users feature-icon"></i>4p per Room</p>
+                                <p class="mb-1"><i class="fas fa-wifi feature-icon"></i>Wi-Fi Available</p>
+                                <p class="mb-1"><i class="fas fa-wind feature-icon"></i>Air Conditioning</p>
+                                <p class="mb-1"><i class="fas fa-door-open feature-icon"></i>16 rooms left</p>
+                            </div>
+                            <p class="card-text h4">N50,000</p>
+                            <button class="btn btn-custom w-100 pay-btn" data-hostel="NAFIL" data-amount="500000">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TETFUND Hostel -->
+                <div class="col-md-4 mb-4">
+                    <div class="card hostel-card">
+                        <img src="hostel2.jpeg" class="card-img-top" alt="TETFUND Hostel">
+                        <div class="card-body">
+                            <h5 class="card-title">TETFUND HOSTEL</h5>
+                            <div class="mb-3">
+                                <p class="mb-1"><i class="fas fa-users feature-icon"></i>6p per Room</p>
+                                <p class="mb-1"><i class="fas fa-wifi feature-icon"></i>Wi-Fi Available</p>
+                                <p class="mb-1"><i class="fas fa-wind feature-icon"></i>Air Conditioning</p>
+                            </div>
+                            <p class="card-text h4">30,000</p>
+                            <button class="btn btn-custom w-100 pay-btn" data-hostel="TETFUND" data-amount="350000">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 45 BY 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card hostel-card">
+                        <img src="hostel3.jpeg" class="card-img-top" alt="45 BY 1">
+                        <div class="card-body">
+                            <h5 class="card-title">45 BY 1</h5>
+                            <div class="mb-3">
+                                <p class="mb-1"><i class="fas fa-users feature-icon"></i>8p per Room</p>
+                                <p class="mb-1"><i class="fas fa-wifi feature-icon"></i>Wi-Fi Available</p>
+                            </div>
+                            <p class="card-text h4">N110,000</p>
+                            <button class="btn btn-custom w-100 pay-btn" data-hostel="45BY1" data-amount="250000">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Success Modal -->
+    <div class="overlay"></div>
+    <div class="payment-success">
+        <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+        <h4>PAYMENT SUCCESSFUL</h4>
+        <p class="mb-3">Transaction ID: <span id="transactionId"></span></p>
+        <button class="btn btn-custom mb-3" onclick="printReceipt()">PRINT RECEIPT</button>
+        <br>
+        <button class="btn btn-outline-primary" onclick="backToHome()">Back Home</button>
+    </div>
+
+    <!-- Help Desk -->
+    <section class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Help Desk</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <p><i class="fas fa-phone me-2"></i>+231-814786903</p>
+                    <p><i class="fas fa-envelope me-2"></i>support@afit.edu.ng</p>
+                    <button class="btn btn-custom" id="liveChatBtn">
+                        <i class="fas fa-comments me-2"></i>LIVE CHAT
+                    </button>
+                </div>
+            </div>
+            <!-- <div class="map-container mt-4" id="map"></div> -->
+            <iframe class="map-container mt-4" id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3921.501980132888!2d7.441142574905482!3d10.618055989521205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11b2b5a479d96109%3A0x9356871e91265a3b!2sAFIT%20Boys%20Hostel!5e0!3m2!1sen!2sng!4v1739313320616!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe class="map-container mt-4" id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3921.559629785209!2d7.444931074905398!3d10.613562089525429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11b2b5411595233b%3A0x74dc565a71029712!2sAFIT%20Girls%20Hostel!5e0!3m2!1sen!2sng!4v1739314269444!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+
+    <section>
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Matric/JAMB Number</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Register</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="registerForm">
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">JAMB Number</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Live Chat Button -->
+    <button id="liveChat" class="btn btn-custom rounded-circle" style="width: 60px; height: 60px;">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Gender selection
+        document.querySelectorAll('.gender-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // You can add logic here to filter hostels based on gender
+            });
+        });
+
+        // Payment processing
+        document.querySelectorAll('.pay-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const hostel = this.dataset.hostel;
+                const amount = this.dataset.amount;
+                
+                // Simulate payment processing
+                setTimeout(() => {
+                    const transactionId = 'AFIT' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                    document.getElementById('transactionId').textContent = transactionId;
+                    document.querySelector('.overlay').style.display = 'block';
+                    document.querySelector('.payment-success').style.display = 'block';
+                }, 1500);
+            });
+        });
+
+        // Print receipt
+        function printReceipt() {
+            window.print();
+        }
+
+        // Back to home
+        function backToHome() {
+            document.querySelector('.overlay').style.display = 'none';
+            document.querySelector('.payment-success').style.display = 'none';
+        }
+
+        // Live chat functionality
+        let chatOpen = false;
+        document.getElementById('liveChat').addEventListener('click', function() {
+            if (!chatOpen) {
+                alert('Live chat support is connecting...');
+                chatOpen = true;
+            }
+        });
+
+        // Floating icons functionality
+        document.querySelectorAll('.floating-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const action = this.getAttribute('title');
+                switch(action) {
+                    case 'Help':
+                        alert('Opening help center...');
+                        break;
+                    case 'Support':
+                        alert('Connecting to support...');
+                        break;
+                    case 'Contact':
+                        window.location.href = 'mailto:support@afit.edu.ng';
+                        break;
+                }
+            });
+        });
+
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+
+            });
+            });
+        });
+
+        // Add hover animations for hostel cards
+        document.querySelectorAll('.hostel-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.querySelector('.card-img-top').style.opacity = '0.8';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.querySelector('.card-img-top').style.opacity = '1';
+            });
+        });
+
+        // Implement room availability counter
+        let roomsLeft = 16;
+        document.querySelectorAll('.pay-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (roomsLeft > 0) {
+                    roomsLeft--;
+                    const roomCounter = this.closest('.card').querySelector('.fa-door-open').parentElement;
+                    roomCounter.textContent = `${roomsLeft} rooms left`;
+                    
+                    if (roomsLeft < 5) {
+                        roomCounter.style.color = 'red';
+                    }
+                }
+                
+                if (roomsLeft === 0) {
+                    this.disabled = true;
+                    this.textContent = 'FULLY BOOKED';
+                }
+            });
+        });
+
+        // Form validation for login/signup
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const inputs = this.querySelectorAll('input');
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('is-invalid');
+                    } else {
+                        input.classList.remove('is-invalid');
+                    }
+                });
+                
+                if (isValid) {
+                    // Process form submission
+                    alert('Form submitted successfully!');
+                }
+            });
+        });
+
+        // Add loading spinner during payment
+        document.querySelectorAll('.pay-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 1500);
+            });
+        });
+
+        // Implement notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} notification`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Add tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Handle mobile responsiveness for floating icons
+        function adjustFloatingIcons() {
+            const floatingIcons = document.querySelector('.floating-icons');
+            if (window.innerWidth < 768) {
+                floatingIcons.style.display = 'none';
+            } else {
+                floatingIcons.style.display = 'flex';
+            }
+        }
+
+        window.addEventListener('resize', adjustFloatingIcons);
+        adjustFloatingIcons();
+
+        // Initialize page loading animation
+        window.addEventListener('load', function() {
+            const preloader = document.createElement('div');
+            preloader.className = 'preloader';
+            preloader.style.display = 'none';
+            document.body.appendChild(preloader);
+        });
+
+        // Handle scroll-to-top button
+        const scrollButton = document.createElement('button');
+        scrollButton.className = 'btn btn-custom scroll-top';
+        scrollButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+        scrollButton.style.position = 'fixed';
+        scrollButton.style.bottom = '20px';
+        scrollButton.style.right = '90px';
+        scrollButton.style.display = 'none';
+        document.body.appendChild(scrollButton);
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollButton.style.display = 'block';
+            } else {
+                scrollButton.style.display = 'none';
+            }
+        });
+
+        scrollButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Initialize the map
+        const map = L.map('map').setView([9.0579, 7.4951], 15); // Coordinates for Abuja
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add a marker for the institution
+        const marker = L.marker([9.0579, 7.4951]).addTo(map);
+        marker.bindPopup("<b>AFIT Campus</b><br>Airforce Institute of Technology").openPopup();
+
+        // Update login/register button handlers
+        document.querySelector('a.btn-light').addEventListener('click', function(e) {
+            e.preventDefault();
+            new bootstrap.Modal(document.getElementById('registerModal')).show();
+        });
+
+        document.querySelector('a.btn-outline-light').addEventListener('click', function(e) {
+            e.preventDefault();
+            new bootstrap.Modal(document.getElementById('loginModal')).show();
+        });
+
+        // Form handling
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Login successful!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Registration successful!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+        });
+
+        // Password validation for register form
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = this.querySelector('input[type="password"]');
+            const confirmPassword = this.querySelectorAll('input[type="password"]')[1];
+            
+            if (password.value !== confirmPassword.value) {
+                showNotification('Passwords do not match!', 'danger');
+                return;
+            }
+        
+            showNotification('Registration successful!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+        });
+    </script>
+</body>
+</html>
