@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFIT Hostels</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+</head>
+<body>
+    <!-- Notice Banner -->
+    <div class="notice-banner">
+        <p class="mb-0">Returning students can use their matric NO/JAMB No to login. New students should sign up using JAMB No.</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Afit Hostels</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Booking</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light ms-2" href="#">Sign up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light ms-2" href="#">Log in</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating Icons -->
+    <div class="floating-icons">
+        <div class="floating-icon" title="Help">
+            <i class="fas fa-question"></i>
+        </div>
+        <div class="floating-icon" title="Support">
+            <i class="fas fa-headset"></i>
+        </div>
+        <div class="floating-icon" title="Contact">
+            <i class="fas fa-envelope"></i>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1>AirForce Institute of Technology</h1>
+            <p class="lead">... Quest of Excellence</p>
+            <button class="btn btn-lg btn-custom">BOOK NOW</button>
+        </div>
+    </section>
+
+    <!-- Hostel Selection -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>Hostel Booking</h2>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-custom w-100 gender-btn active" data-gender="girls">GIRLS</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-outline-primary w-100 gender-btn" data-gender="boys">BOYS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- NAFIL Hostel -->
+                <div class="col-md-4 mb-4">
+                    <div class="card hostel-card">
+                        <img src="hostel1.jpeg" class="card-img-top" alt="NAFIL Hostel">
+                        <div class="card-body">
+                            <h5 class="card-title">NAFIL HOSTEL</h5>
+                            <div class="mb-3">
+                                <p class="mb-1"><i class="fas fa-users feature-icon"></i>4p per Room</p>
+                                <p class="mb-1"><i class="fas fa-wifi feature-icon"></i>Wi-Fi Available</p>
+                                <p class="mb-1"><i class="fas fa-wind feature-icon"></i>Air Conditioning</p>
+                                <p class="mb-1"><i class="fas fa-door-open feature-icon"></i>16 rooms left</p>
+                            </div>
+                            <p class="card-text h4">N50,000</p>
+                            <button class="btn btn-custom w-100 pay-btn" data-hostel="NAFIL" data-amount="500000">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TETFUND Hostel -->
+                <div class="col-md-4 mb-4">
+                    <div class="card hostel-card">
+                        <img src="hostel2.jpeg" class="card-img-top" alt="TETFUND Hostel">
+                        <div class="card-body">
+                            <h5 class="card-title">TETFUND HOSTEL</h5>
+                            <div class="mb-3">
+                                <p class="mb-1"><i class="fas fa-users feature-icon"></i>6p per Room</p>
+                                <p class="mb-1"><i class="fas fa-wifi feature-icon"></i>Wi-Fi Available</p>
+                                <p class="mb-1"><i class="fas fa-wind feature-icon"></i>Air Conditioning</p>
+                            </div>
+                            <p class="card-text h4">30,000</p>
+                            <button class="btn btn-custom w-100 pay-btn" data-hostel="TETFUND" data-amount="350000">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 45 BY 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card hostel-card">
+                        <img src="hostel3.jpeg" class="card-img-top" alt="45 BY 1">
+                        <div class="card-body">
+                            <h5 class="card-title">45 BY 1</h5>
+                            <div class="mb-3">
+                                <p class="mb-1"><i class="fas fa-users feature-icon"></i>8p per Room</p>
+                                <p class="mb-1"><i class="fas fa-wifi feature-icon"></i>Wi-Fi Available</p>
+                            </div>
+                            <p class="card-text h4">N110,000</p>
+                            <button class="btn btn-custom w-100 pay-btn" data-hostel="45BY1" data-amount="250000">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Success Modal -->
+    <div class="overlay"></div>
+    <div class="payment-success">
+        <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+        <h4>PAYMENT SUCCESSFUL</h4>
+        <p class="mb-3">Transaction ID: <span id="transactionId"></span></p>
+        <button class="btn btn-custom mb-3" onclick="printReceipt()">PRINT RECEIPT</button>
+        <br>
+        <button class="btn btn-outline-primary" onclick="backToHome()">Back Home</button>
+    </div>
+
+    <!-- Help Desk -->
+    <section class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Help Desk</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <p><i class="fas fa-phone me-2"></i>+231-814786903</p>
+                    <p><i class="fas fa-envelope me-2"></i>support@afit.edu.ng</p>
+                    <button class="btn btn-custom" id="liveChatBtn">
+                        <i class="fas fa-comments me-2"></i>LIVE CHAT
+                    </button>
+                </div>
+            </div>
+
+            <iframe class="map-container mt-4" id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3921.501980132888!2d7.441142574905482!3d10.618055989521205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11b2b5a479d96109%3A0x9356871e91265a3b!2sAFIT%20Boys%20Hostel!5e0!3m2!1sen!2sng!4v1739313320616!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe class="map-container mt-4" id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3921.559629785209!2d7.444931074905398!3d10.613562089525429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11b2b5411595233b%3A0x74dc565a71029712!2sAFIT%20Girls%20Hostel!5e0!3m2!1sen!2sng!4v1739314269444!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+
+    <section>
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Matric/JAMB Number</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Register</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="registerForm">
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">JAMB Number</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Chat Button -->
+    <button id="liveChat" class="btn btn-custom rounded-circle" style="width: 60px; height: 60px;">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
